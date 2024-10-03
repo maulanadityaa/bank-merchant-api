@@ -18,6 +18,7 @@ type AuthService struct{}
 
 var accountRepository repositories.AccountRepository = impl.NewAccountRepository()
 var roleRepository repositories.RoleRepository = impl.NewRoleRepository()
+var blacklistRepository repositories.BlacklistRepository = impl.NewBlacklistRepository()
 var customerService services.CustomerService = NewCustomerService()
 var merchantService services.MerchantService = NewMerchantService()
 var historyService services.HistoryService = NewHistoryService()
@@ -126,5 +127,54 @@ func (AuthService) Login(req request.LoginRequest) (response.LoginResponse, erro
 }
 
 func (AuthService) Logout(c *gin.Context) (response.LogoutResponse, error) {
-	return response.LogoutResponse{}, nil
+	token := utils.GetJWTToken(c)
+	claims := utils.GetJWTClaims(c)
+	accountId := claims["accountId"].(string)
+
+	account, err := accountRepository.GetAccountByID(accountId)
+	if err != nil {
+		return response.LogoutResponse{}, err
+	}
+
+	account.IsLogged = false
+	account, err = accountRepository.UpdateAccount(account)
+	if err != nil {
+		return response.LogoutResponse{}, err
+	}
+
+	isBlacklisted, _ := blacklistRepository.IsBlacklist(token)
+	if isBlacklisted {
+		return response.LogoutResponse{
+			Message: "Logout success",
+		}, nil
+	}
+
+	blacklist, err := blacklistRepository.AddBlacklist(token)
+	if err != nil && !blacklist {
+		return response.LogoutResponse{}, err
+	}
+
+	role, _ := roleRepository.GetRoleByID(account.RoleID)
+
+	newHistoryRequest := request.HistoryRequest{}
+	newHistoryRequest.Action = "LOGOUT"
+
+	if role.Name == "ROLE_CUSTOMER" {
+		customer, _ := customerService.GetCustomerByAccountID(account.ID)
+		newHistoryRequest.CustomerID = utils.StringToPointer(customer.ID)
+	} else if role.Name == "ROLE_MERCHANT" {
+		merchant, _ := merchantService.GetMerchantByAccountID(account.ID)
+		newHistoryRequest.MerchantID = utils.StringToPointer(merchant.ID)
+	} else {
+		return response.LogoutResponse{}, errors.New("role not found")
+	}
+
+	history, err := historyService.AddHistory(newHistoryRequest)
+	if err != nil && !history {
+		return response.LogoutResponse{}, err
+	}
+
+	return response.LogoutResponse{
+		Message: "Logout success",
+	}, nil
 }

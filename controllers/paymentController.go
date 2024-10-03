@@ -2,11 +2,11 @@ package controllers
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/maulanadityaa/bank-merchant-api/middlewares"
 	"github.com/maulanadityaa/bank-merchant-api/models/dto/request"
 	"github.com/maulanadityaa/bank-merchant-api/models/dto/response"
 	"github.com/maulanadityaa/bank-merchant-api/services"
 	"github.com/maulanadityaa/bank-merchant-api/services/impl"
-	"github.com/maulanadityaa/bank-merchant-api/utils"
 )
 
 type PaymentController struct{}
@@ -16,9 +16,9 @@ var paymentService services.PaymentService = impl.NewPaymentService()
 func NewPaymentController(g *gin.RouterGroup) {
 	controller := new(PaymentController)
 
-	paymentGroup := g.Group("/payment", utils.ValidateJWT())
+	paymentGroup := g.Group("/payment", middlewares.ValidateJWT())
 	{
-		paymentGroup.POST("/pay", controller.Pay)
+		paymentGroup.POST("/pay", middlewares.AuthWithRole([]string{"ROLE_CUSTOMER"}), controller.Pay)
 	}
 }
 

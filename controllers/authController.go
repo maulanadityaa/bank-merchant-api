@@ -19,6 +19,7 @@ func NewAuthController(g *gin.RouterGroup) {
 	{
 		authGroup.POST("/register", controller.Register)
 		authGroup.POST("/login", controller.Login)
+		authGroup.POST("/logout", controller.Logout)
 	}
 }
 
@@ -48,6 +49,16 @@ func (AuthController) Login(c *gin.Context) {
 	}
 
 	result, err := authService.Login(request)
+	if err != nil {
+		response.NewResponseError(c, err.Error())
+		return
+	}
+
+	response.NewResponseOK(c, result)
+}
+
+func (AuthController) Logout(c *gin.Context) {
+	result, err := authService.Logout(c)
 	if err != nil {
 		response.NewResponseError(c, err.Error())
 		return

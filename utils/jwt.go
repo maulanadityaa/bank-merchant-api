@@ -106,3 +106,14 @@ func GetJWTClaims(c *gin.Context) jwt.MapClaims {
 
 	return claims
 }
+
+func GetJWTToken(c *gin.Context) string {
+	tokenString := c.GetHeader("Authorization")
+
+	parts := strings.Split(tokenString, " ")
+	if len(parts) != 2 || parts[0] != "Bearer" {
+		return ""
+	}
+
+	return parts[1]
+}

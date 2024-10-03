@@ -28,7 +28,7 @@ func ConnectDB() {
 		panic("Failed to connect to database")
 	}
 
-	database.AutoMigrate(&entity.Role{}, &entity.Account{}, &entity.Merchant{}, &entity.Customer{}, &entity.History{})
+	database.AutoMigrate(&entity.Role{}, &entity.Account{}, &entity.Merchant{}, &entity.Customer{}, &entity.History{}, &entity.Blacklist{})
 
 	DB = database
 
