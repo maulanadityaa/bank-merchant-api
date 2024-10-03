@@ -34,6 +34,18 @@ func (service *PaymentService) Pay(req request.PaymentRequest, c *gin.Context) (
 		return response.PaymentResponse{}, errors.New("insufficient balance")
 	}
 
+	newHistoryRequest := request.HistoryRequest{
+		CustomerID: utils.StringToPointer(customer.ID),
+		MerchantID: utils.StringToPointer(merchant.ID),
+		Amount:     req.Amount,
+		Action:     "PAYMENT",
+	}
+
+	history, err := historyService.AddHistory(newHistoryRequest)
+	if err != nil && !history {
+		return response.PaymentResponse{}, err
+	}
+
 	newCustomerRequest := request.UserUpdateRequest{
 		ID:      customer.ID,
 		Name:    customer.Name,

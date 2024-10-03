@@ -23,12 +23,12 @@ func NewCustomerService() *CustomerService {
 	return &CustomerService{}
 }
 
-func (CustomerService) AddCustomer(request request.UserRequest) (response.UserResponse, error) {
+func (CustomerService) AddCustomer(req request.UserRequest) (response.UserResponse, error) {
 	newCustomer := entity.Customer{
 		ID:        uuid.NewString(),
-		Name:      request.Name,
-		Balance:   request.Balance,
-		AccountID: request.AccountID,
+		Name:      req.Name,
+		Balance:   req.Balance,
+		AccountID: req.AccountID,
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	}
@@ -47,18 +47,27 @@ func (CustomerService) AddCustomer(request request.UserRequest) (response.UserRe
 	}, nil
 }
 
-func (CustomerService) UpdateCustomer(request request.UserUpdateRequest) (response.UserResponse, error) {
-	customer, err := customerRepository.GetCustomerByID(request.ID)
+func (CustomerService) UpdateCustomer(req request.UserUpdateRequest) (response.UserResponse, error) {
+	customer, err := customerRepository.GetCustomerByID(req.ID)
 	if err != nil {
 		return response.UserResponse{}, err
 	}
 
-	customer.Name = request.Name
-	customer.Balance = request.Balance
+	customer.Name = req.Name
+	customer.Balance = req.Balance
 	customer.UpdatedAt = time.Now()
 
 	updatedCustomer, err := customerRepository.UpdateCustomer(customer)
 	if err != nil {
+		return response.UserResponse{}, err
+	}
+
+	newHistoryRequest := request.HistoryRequest{}
+	newHistoryRequest.CustomerID = utils.StringToPointer(updatedCustomer.ID)
+	newHistoryRequest.Action = "UPDATE"
+
+	history, err := historyService.AddHistory(newHistoryRequest)
+	if err != nil && !history {
 		return response.UserResponse{}, err
 	}
 

@@ -3,6 +3,7 @@ package impl
 import (
 	"errors"
 
+	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/maulanadityaa/bank-merchant-api/models/dto/request"
 	"github.com/maulanadityaa/bank-merchant-api/models/dto/response"
@@ -19,6 +20,7 @@ var accountRepository repositories.AccountRepository = impl.NewAccountRepository
 var roleRepository repositories.RoleRepository = impl.NewRoleRepository()
 var customerService services.CustomerService = NewCustomerService()
 var merchantService services.MerchantService = NewMerchantService()
+var historyService services.HistoryService = NewHistoryService()
 
 func NewAuthService() *AuthService {
 	return &AuthService{}
@@ -48,13 +50,22 @@ func (AuthService) Register(req request.RegisterRequest) (response.RegisterRespo
 	}
 
 	var userResponse response.UserResponse
+	newHistoryRequest := request.HistoryRequest{}
+	newHistoryRequest.Action = "REGISTER"
 
 	if role.Name == "ROLE_CUSTOMER" {
 		userResponse, _ = customerService.AddCustomer(newUserRequest)
+		newHistoryRequest.CustomerID = utils.StringToPointer(userResponse.ID)
 	} else if role.Name == "ROLE_MERCHANT" {
 		userResponse, _ = merchantService.AddMerchant(newUserRequest)
+		newHistoryRequest.MerchantID = utils.StringToPointer(userResponse.ID)
 	} else {
 		return response.RegisterResponse{}, errors.New("role not found")
+	}
+
+	history, err := historyService.AddHistory(newHistoryRequest)
+	if err != nil && !history {
+		return response.RegisterResponse{}, err
 	}
 
 	return response.RegisterResponse{
@@ -86,6 +97,24 @@ func (AuthService) Login(req request.LoginRequest) (response.LoginResponse, erro
 		return response.LoginResponse{}, err
 	}
 
+	newHistoryRequest := request.HistoryRequest{}
+	newHistoryRequest.Action = "LOGIN"
+
+	if role.Name == "ROLE_CUSTOMER" {
+		customer, _ := customerService.GetCustomerByAccountID(account.ID)
+		newHistoryRequest.CustomerID = utils.StringToPointer(customer.ID)
+	} else if role.Name == "ROLE_MERCHANT" {
+		merchant, _ := merchantService.GetMerchantByAccountID(account.ID)
+		newHistoryRequest.MerchantID = utils.StringToPointer(merchant.ID)
+	} else {
+		return response.LoginResponse{}, errors.New("role not found")
+	}
+
+	history, err := historyService.AddHistory(newHistoryRequest)
+	if err != nil && !history {
+		return response.LoginResponse{}, err
+	}
+
 	token, err := utils.GenerateJWT(account.ID, role.Name, account.Email)
 	if err != nil {
 		return response.LoginResponse{}, err
@@ -94,4 +123,8 @@ func (AuthService) Login(req request.LoginRequest) (response.LoginResponse, erro
 	return response.LoginResponse{
 		Token: token,
 	}, nil
+}
+
+func (AuthService) Logout(c *gin.Context) (response.LogoutResponse, error) {
+	return response.LogoutResponse{}, nil
 }

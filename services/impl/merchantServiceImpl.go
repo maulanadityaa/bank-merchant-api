@@ -47,18 +47,27 @@ func (MerchantService) AddMerchant(request request.UserRequest) (response.UserRe
 	}, nil
 }
 
-func (MerchantService) UpdateMerchant(request request.UserUpdateRequest) (response.UserResponse, error) {
-	merchant, err := merchantRepository.GetMerchantByID(request.ID)
+func (MerchantService) UpdateMerchant(req request.UserUpdateRequest) (response.UserResponse, error) {
+	merchant, err := merchantRepository.GetMerchantByID(req.ID)
 	if err != nil {
 		return response.UserResponse{}, err
 	}
 
-	merchant.Name = request.Name
-	merchant.Balance = request.Balance
+	merchant.Name = req.Name
+	merchant.Balance = req.Balance
 	merchant.UpdatedAt = time.Now()
 
 	updatedMerchant, err := merchantRepository.UpdateMerchant(merchant)
 	if err != nil {
+		return response.UserResponse{}, err
+	}
+
+	newHistoryRequest := request.HistoryRequest{}
+	newHistoryRequest.MerchantID = utils.StringToPointer(updatedMerchant.ID)
+	newHistoryRequest.Action = "UPDATE"
+
+	history, err := historyService.AddHistory(newHistoryRequest)
+	if err != nil && !history {
 		return response.UserResponse{}, err
 	}
 

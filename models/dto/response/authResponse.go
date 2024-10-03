@@ -10,4 +10,8 @@ type (
 		Role         RoleResponse `json:"role"`
 		UserResponse `json:"user"`
 	}
+
+	LogoutResponse struct {
+		Message string `json:"message"`
+	}
 )
