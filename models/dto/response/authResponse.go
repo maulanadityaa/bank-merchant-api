@@ -6,8 +6,8 @@ type (
 	}
 
 	RegisterResponse struct {
-		Email string       `json:"email"`
-		Role  RoleResponse `json:"role"`
-		UserResponse
+		Email        string       `json:"email"`
+		Role         RoleResponse `json:"role"`
+		UserResponse `json:"user"`
 	}
 )

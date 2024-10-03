@@ -2,8 +2,9 @@ package request
 
 type (
 	UserRequest struct {
-		Name    string `json:"name" validate:"required"`
-		Balance uint64 `json:"balance" validate:"required"`
+		Name      string `json:"name" validate:"required"`
+		Balance   uint64 `json:"balance" validate:"required"`
+		AccountID string `json:"accountId"`
 	}
 
 	UserUpdateRequest struct {
