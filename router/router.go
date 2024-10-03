@@ -7,4 +7,5 @@ import (
 
 func InitRouter(route *gin.RouterGroup) {
 	controllers.NewAuthController(route)
+	controllers.NewPaymentController(route)
 }
