@@ -7,10 +7,14 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/maulanadityaa/bank-merchant-api/models/dto/request"
 	"github.com/maulanadityaa/bank-merchant-api/models/dto/response"
+	"github.com/maulanadityaa/bank-merchant-api/repositories"
+	"github.com/maulanadityaa/bank-merchant-api/repositories/impl"
 	"github.com/maulanadityaa/bank-merchant-api/utils"
 )
 
 type PaymentService struct{}
+
+var paymentRepository repositories.PaymentRepository = impl.NewPaymentRepository()
 
 func NewPaymentService() *PaymentService {
 	return &PaymentService{}
@@ -46,24 +50,17 @@ func (service *PaymentService) Pay(req request.PaymentRequest, c *gin.Context) (
 		return response.PaymentResponse{}, err
 	}
 
-	newCustomerRequest := request.UserUpdateRequest{
-		ID:      customer.ID,
-		Name:    customer.Name,
-		Balance: customer.Balance - uint64(req.Amount),
-	}
-
-	customerResponse, err := customerService.UpdateCustomer(newCustomerRequest)
+	_, err = paymentRepository.TransferBalance(accountId, req.To, req.Amount)
 	if err != nil {
 		return response.PaymentResponse{}, err
 	}
 
-	newMerchantRequest := request.UserUpdateRequest{
-		ID:      merchant.ID,
-		Name:    merchant.Name,
-		Balance: merchant.Balance + uint64(req.Amount),
+	customerResponse, err := customerService.GetCustomerByAccountID(accountId)
+	if err != nil {
+		return response.PaymentResponse{}, err
 	}
 
-	merchantResponse, err := merchantService.UpdateMerchant(newMerchantRequest)
+	merchantResponse, err := merchantService.GetMerchantByID(req.To)
 	if err != nil {
 		return response.PaymentResponse{}, err
 	}
