@@ -1,0 +1,20 @@
+[
+  {
+    "id": "1071d6a9-0de0-4f0f-adda-d44c5e47d0f4",
+    "name": "Alfredo Kling",
+    "balance": 1000000,
+    "accountId": "f01f5581-a0d9-4389-aa61-92344d3ecc90"
+  },
+  {
+    "id": "310893d8-e3b0-4d27-b0ed-534bd034f05d",
+    "name": "Christy Wilkinson",
+    "balance": 990000,
+    "accountId": "154648a0-fd5d-4f45-b352-bbd4c4f786c5"
+  },
+  {
+    "id": "c2df7ced-d05b-489c-9163-205981134f92",
+    "name": "Lynn Schmeler",
+    "balance": 30000,
+    "accountId": "a4f28da2-1abc-42b5-8c9c-e9c167ff3e7e"
+  }
+]

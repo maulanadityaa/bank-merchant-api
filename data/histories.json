@@ -1,0 +1,26 @@
+[
+  {
+    "id": "12bff4cb-783f-48ec-ae9d-6c056bebc45e",
+    "customerId": "c2df7ced-d05b-489c-9163-205981134f92",
+    "merchantId": null,
+    "amount": 0,
+    "action": "LOGIN",
+    "createdAt": "2024-10-03 15:06:03.101543 +00:00"
+  },
+  {
+    "id": "eb893650-c4f9-441e-b63a-c3ef014571ec",
+    "customerId": null,
+    "merchantId": "97dda43f-6678-4135-91b0-e30f3aa2205b",
+    "amount": 0,
+    "action": "LOGIN",
+    "createdAt": "2024-10-03 15:52:35.496079 +00:00"
+  },
+  {
+    "id": "6de9a923-f1b4-4bc1-b7dd-4e5b01e9ae01",
+    "customerId": "c2df7ced-d05b-489c-9163-205981134f92",
+    "merchantId": "97dda43f-6678-4135-91b0-e30f3aa2205b",
+    "amount": 10000,
+    "action": "PAYMENT",
+    "createdAt": "2024-10-03 15:41:30.474061 +00:00"
+  }
+]

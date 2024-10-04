@@ -1,0 +1,16 @@
+[
+  {
+    "id": "f01f5581-a0d9-4389-aa61-92344d3ecc90",
+    "email": "Gennaro40@hotmail.com",
+    "password": "$2a$10$44uk5At9234ibjsGMqwJu.bsgQGLIgTSbjsqvS91tks82SIemfPdC",
+    "isLogged": false,
+    "roleId": "af82c6ff-438f-49e6-8343-eda514694323"
+  },
+  {
+    "id": "b091a81f-a6b9-46b3-a5a3-250b994a3d28",
+    "email": "Shana.Prosacco5@hotmail.com",
+    "password": "$2a$10$6Lp8XMAHUHzbeep0JsKwe.cQClc0FoozkVa8s6Zqd87z6p1bXQjOS",
+    "isLogged": true,
+    "roleId": "8a6e9a35-318d-4beb-9d1f-9bb152a11dee"
+  }
+]

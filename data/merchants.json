@@ -1,0 +1,14 @@
+[
+  {
+    "id": "b1b5eb65-9c54-4511-85be-f07946ccb65c",
+    "name": "Schoen Shop",
+    "balance": 2510000,
+    "accountId": "b091a81f-a6b9-46b3-a5a3-250b994a3d28"
+  },
+  {
+    "id": "97dda43f-6678-4135-91b0-e30f3aa2205b",
+    "name": "Christy Pet Care",
+    "balance": 3470000,
+    "accountId": "91091aae-eb27-46d4-b722-3435af3e4083"
+  }
+]
