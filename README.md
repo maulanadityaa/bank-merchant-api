@@ -109,4 +109,4 @@ Postman : https://documenter.getpostman.com/view/32332849/2sAXxLCa2E
 M Maulana Z Aditya -
 Instagram - [@maulanadityaa](https://instagram.com/maulanadityaa)
 
-Project Link: [https://github.com/maulanadityaa/zoo-ticket](https://github.com/maulanadityaa/zoo-ticket)
+Project Link: [https://github.com/maulanadityaa/bank-merchant-api](https://github.com/maulanadityaa/bank-merchant-api)

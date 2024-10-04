@@ -6,6 +6,7 @@ import (
 	"github.com/maulanadityaa/bank-merchant-api/models/dto/response"
 	"github.com/maulanadityaa/bank-merchant-api/services"
 	"github.com/maulanadityaa/bank-merchant-api/services/impl"
+	"github.com/maulanadityaa/bank-merchant-api/validators"
 )
 
 type AuthController struct{}
@@ -31,6 +32,12 @@ func (AuthController) Register(c *gin.Context) {
 		return
 	}
 
+	errors := validators.ValidateStruct(request)
+	if errors != nil {
+		response.NewResponseValidationError(c, errors)
+		return
+	}
+
 	result, err := authService.Register(request)
 	if err != nil {
 		response.NewResponseError(c, err.Error())
@@ -45,6 +52,12 @@ func (AuthController) Login(c *gin.Context) {
 
 	if err := c.ShouldBindJSON(&request); err != nil {
 		response.NewResponseBadRequest(c, err.Error())
+		return
+	}
+
+	errors := validators.ValidateStruct(request)
+	if errors != nil {
+		response.NewResponseValidationError(c, errors)
 		return
 	}
 

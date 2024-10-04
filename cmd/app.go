@@ -9,6 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/maulanadityaa/bank-merchant-api/config"
 	"github.com/maulanadityaa/bank-merchant-api/router"
+	"github.com/maulanadityaa/bank-merchant-api/validators"
 )
 
 func initDomainModule(r *gin.Engine) {
@@ -29,6 +30,8 @@ func InitApp() {
 
 	config.LoadConfig()
 	config.ConnectDB()
+
+	validators.InitValidator()
 
 	initDomainModule(r)
 
